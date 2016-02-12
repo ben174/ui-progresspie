@@ -1,14 +1,14 @@
-'use strict'
+#'use strict'
 
 ###*
  # @ngdoc directive
- # @name angularProgresspieApp.directive:progressPie
+ # @name ui-progresspie.directive:progresspie
  # @description
  # # progressPie
 ###
-angular.module 'angularProgresspieApp'
-  .directive 'progressPie', ->
+angular.module 'ui-progresspie', []
+  .directive 'progresspie', ->
     restrict: 'EA'
     template: '<div></div>'
     link: (scope, element, attrs) ->
-      element.text 'this is the progressPie directive'
+      element.text 'test'

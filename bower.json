@@ -1,0 +1,33 @@
+{
+  "name": "ui-progresspie",
+  "author": "https://github.com/ben174/ui-progresspie",
+  "description": "ui-progresspie - Creates a neat progress circle thing",
+  "version": "0.0.1",
+  "homepage": "http://www.bugben.com",
+  "keywords": [
+    "angularjs",
+    "javascript",
+  ],
+  "main": [
+    "dist/progresspie.js"
+  ],
+  "dependencies": {
+    "angular": "1.x",
+    "angular-simple-logger": "~0.1.4",
+  },
+  "devDependencies": {
+  },
+  "ignore": [
+    "dist/coverage/",
+    "dist/src/",
+    "website/",
+    "**/.*",
+    "src",
+    "doc",
+    "examples",
+    "test",
+    "*.md",
+    "Gruntfile.js",
+    "package.json",
+  ]
+}

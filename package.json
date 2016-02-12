@@ -1,0 +1,39 @@
+{
+  "org": "www.bugben.com",
+  "author": "Ben Friedland (http://www.bugben.com)",
+  "name": "ui-progresspie",
+  "description": "ui-progresspie - An Angular directive which renders a circular progress meter with two values: Expected and Actual progress (0.0 - 1.0)",
+  "version": "0.0.1",
+  "homepage": "https://github.com/ben174/ui-progresspie",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ben174/ui-progresspie"
+  },
+  "scripts": {
+    "test": "grunt travis --verbose",
+    "karma": "karma start ./test/karma.conf.js"
+  },
+  "main": "dist/ui-leaflet.js",
+  "keywords": [
+    "angularjs",
+    "javascript",
+    "directive",
+    "progress",
+    "piechart"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-nodeunit": "~0.4.1",
+    "grunt-contrib-uglify": "~0.5.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-bower-task": "^0.4.0",
+    "karma": "0.13.x",
+    "requirejs": "^2.1.20"
+  },
+  "dependencies": {
+    "angular": "1.x",
+    "angular-simple-logger": "0.1.x"
+  }
+}

@@ -1,18 +1,18 @@
-(function() {
-  'use strict';
 
-  /**
-    * @ngdoc directive
-    * @name angularProgresspieApp.directive:progressPie
-    * @description
-    * # progressPie
-   */
-  angular.module('angularProgresspieApp').directive('progressPie', function() {
+/**
+  * @ngdoc directive
+  * @name ui-progresspie.directive:progresspie
+  * @description
+  * # progressPie
+ */
+
+(function() {
+  angular.module('ui-progresspie', []).directive('progresspie', function() {
     return {
       restrict: 'EA',
       template: '<div></div>',
       link: function(scope, element, attrs) {
-        return element.text('this is the progressPie directive');
+        return element.text('test');
       }
     };
   });
