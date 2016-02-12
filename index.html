@@ -3,7 +3,6 @@
   <head>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
     <script src="dist/progresspie.js"></script>
-    <script src="dist/simple.js"></script>
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script>
         var app = angular.module("demoapp", ['ui-progresspie']);
@@ -34,8 +33,8 @@ var actualArc = d3.svg.arc()
     .startAngle(0);
 
 var expectedArc = d3.svg.arc()
-    .innerRadius(180)
-    .outerRadius(200)
+    .innerRadius(200)
+    .outerRadius(210)
     .startAngle(0);
 
 // Create the SVG container, and apply a transform such that the origin is the
@@ -43,39 +42,58 @@ var expectedArc = d3.svg.arc()
 var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .append("g")
+  .append("g")
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
 
+var meters = svg.append("g")
+    .datum({stroke: "#00F"})
 
-var actual = svg.append("path")
+
+var actual = meters.append("path")
     .datum({endAngle: 0, color: "#78c000"})
     .style("fill", "#78c000")
     .attr("d", actualArc)
     .attr("stroke-width", "10px")
-    .attr("stroke", "#78c000")
     .attr("stroke-linejoin", "round");
 
-var expected = svg.append("path")
+var expected = meters.append("path")
     .datum({endAngle: 0, color: "#78c000"})
     .style("fill", "#78c000")
     .attr("d", expectedArc)
     .attr("stroke-width", "1px")
-    .attr("stroke", "#78c000")
     .attr("stroke-linejoin", "round")
     .attr("opacity", "0.5");
 
 function setVal(expectedVal, actualVal) {
   actual.transition().duration(1000).call(arcTween, actualVal * tau, actualArc)
   expected.transition().duration(1000).call(arcTween, expectedVal * tau, expectedArc)
-  actual.transition()
+
+
+
+  meters.transition()
     .duration(1000)
-    .style("stroke", function() {
-      return "red";
+    .tween("color", function() {
+      var i = d3.interpolate("#F00", "#0F0")
+      return function(t) { meters.attr("stroke", i(t)); };
     });
+
+
 }
 
 
-function colorTween(transition, newColor, arc) {
+function cTween(transition) {
+  transition.attrTween("stroke", function(d) {
+    var interpolate = d3.interpolate("#F00", "#0F0");
+    return function(t) {
+      d.stroke = interpolate(t);
+      return arc(d);
+    };
+  });
+
+};
+
+
+function colorTween(transition, newColor) {
   transition.attrTween("stroke", function(d) {
     //var interpolate = d3.interpolateRgb(d.color, newColor);
     var interpolate = d3.interpolateRgb.gamma(2.2)("purple", "orange");
@@ -92,7 +110,7 @@ function colorTween(transition, newColor, arc) {
       // (that is, the end angle) rather than the path string itself.
       // Interpolating the angles in polar coordinates, rather than the raw path
       // string, produces valid intermediate arcs during the transition.
-      return arc(d);
+      return meters(d);
     };
   });
 
