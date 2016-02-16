@@ -11,17 +11,23 @@ angular.module 'ui-progresspie', []
     .directive 'progresspie', () ->
         controller: 'ProgressPieCtrl as ctrl',
         link: (scope, element, attr, ctrl) ->
+            scope.$watch 'ctrl.actual', -> ctrl.update()
+            scope.$watch 'ctrl.expected', -> ctrl.update()
             ctrl.draw element
-            ctrl.printValues
+        bindToController:
+            actual: '='
+            expected: '='
 
     .controller 'ProgressPieCtrl',
-        class ProgressPieX
+        class ProgressPie
+            actual: 0
+
+            expected: 0
+
             constructor: () ->
-                @size = 220
-                console.log "Constructor called!"
-                @updateSpeed = 1000
+                @size = 240
+                @updateSpeed = 500
                 @radius = @size / 2
-                console.log "Radius set to #{@radius}."
                 @tau = 2 * Math.PI
                 @threshold = 0.1
                 @normalColor = "#78c000"
@@ -29,11 +35,7 @@ angular.module 'ui-progresspie', []
 
             draw: (element) ->
                 @elem = d3.select(element[0])
-                console.log "draw called!"
-                console.log "size is #{@size}"
                 radius = @size / 2
-                console.log "Radius set to #{@radius}."
-                console.log @radius
                 actualInner = @radius - (@radius * 0.10)
                 actualOuter = @radius
                 gap = @radius * 0.02
@@ -41,17 +43,6 @@ angular.module 'ui-progresspie', []
                 expectedOuter = actualInner - gap
                 circleRadius = @radius * 0.7
                 danger = false
-                @actualVal = 0
-                @expectedVal = 0
-
-                console.log "Actual Inner: #{actualInner}"
-                console.log "Actual Outer: #{actualOuter}"
-                console.log "Gap: #{gap}"
-                console.log "Expected Inner: #{expectedInner}"
-                console.log "Expected Outer: #{expectedOuter}"
-                console.log "Circle Radius: #{circleRadius}"
-
-
                 fontSize = @radius * 0.4
                 lineGap = fontSize * 0.65
 
@@ -85,12 +76,14 @@ angular.module 'ui-progresspie', []
 
                 progressVal = textGroup.append "text"
                     .attr "text-anchor", "middle"
-                    .append "tspan"
-                        .text "73"
-                        .attr "font-size", fontSize
-                    .append "tspan"
-                        .attr "font-size", fontSize / 2
-                        .text "%"
+
+                @progressNum = progressVal.append "tspan"
+                    .text "0"
+                    .attr "font-size", fontSize
+
+                progressVal.append "tspan"
+                    .attr "font-size", fontSize / 2
+                    .text "%"
 
                 progressLabel = textGroup.append "text"
                     .attr "font-size", fontSize / 2
@@ -98,43 +91,34 @@ angular.module 'ui-progresspie', []
                     .attr "text-anchor", "middle"
                     .text "Progress"
 
-                @meters = svg.append("g")
+                meters = svg.append("g")
                     .attr("fill", @normalColor);
 
-                @actualPath = @meters.append "path"
+                @actualPath = meters.append "path"
                     .datum {endAngle: 0}
                     .attr "d", @actualArc
 
-                @expectedPath = @meters.append "path"
+                @expectedPath = meters.append "path"
                     .datum {endAngle: 0}
                     .attr "d", @expectedArc
                     .attr "opacity", "0.33"
 
-                @update 0.5, 0.75
 
             isDanger: ->
-                return Math.abs(@expectedVal - @actualVal) >= @threshold
+                return @expected - @actual >= @threshold
 
-            update: (expected, actual) ->
-                @actualVal = actual
-                @expectedVal = expected
-                @actualPath.transition()
-                    .duration(1000)
-                    .call(@arcTween, actual * @tau, @actualArc)
-                @expectedPath.transition()
-                    .duration(1000)
-                    .call(@arcTween, expected * @tau, @expectedArc)
-                startColor = @meters.attr "fill"
+            update: ->
+                console.log "Update: #{@actual}, #{@expected}"
+                @progressNum.text Math.round @actual * 100
                 endColor = if @isDanger() then @dangerColor else @normalColor
-                console.log "Transitioning to #{endColor}"
-                console.log "Danger? #{@isDanger()}"
-                console.log "Current color: #{startColor}"
-                @meters.transition()
-                    .duration 1000
-                    .tween "color", () ->
-                        i = d3.interpolate(startColor, endColor)
-                        return (t) ->
-                            this.setAttribute "fill", i(t)
+                @actualPath.transition()
+                    .duration @updateSpeed
+                    .style "fill", endColor
+                    .call @arcTween, @actual * @tau, @actualArc
+                @expectedPath.transition()
+                    .duration @updateSpeed
+                    .style "fill", endColor
+                    .call @arcTween, @expected * @tau, @expectedArc
 
             arcTween: (transition, newAngle, arc) ->
                 transition.attrTween "d", (d) ->
@@ -142,4 +126,6 @@ angular.module 'ui-progresspie', []
                     return (t) ->
                         d.endAngle = interpolate t;
                         return arc d
-            printValues: ->
+            setRandom: ->
+                console.log "Set random was called"
+                @update Math.random(), Math.random()

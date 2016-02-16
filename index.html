@@ -6,7 +6,7 @@
     <script src="dist/progresspie.js"></script>
     <script>
         var app = angular.module("demoapp", ['ui-progresspie']);
-        app.controller("BasicFirstController", [ "$scope", function($scope) {
+        app.controller("ProgressPieController", [ "$scope", function($scope) {
             // Nothing here!
         }]);
     </script>
@@ -18,168 +18,10 @@
     }
     </style>
   </head>
-  <body ng-controller="BasicFirstController">
-    <div progresspie></div>
-
-    <!--
-    <script>
-    function ProgressPie() {
-      this.width = 220;
-      this.height = this.width;
-      this.tau = 2 * Math.PI;
-      this.radius = this.width / 2;
-      this.actualInner = this.radius - (this.radius * 0.10);
-      this.actualOuter = this.radius;
-      this.gap = this.radius * 0.02;
-      this.expectedOuter = this.actualInner - this.gap;
-      this.expectedInner = this.radius - (this.radius * 0.17);
-      this.circleRadius = this.radius * 0.7;
-      this.fontSize = this.radius * 0.4;
-      this.threshold = 0.1;
-      this.danger = false;
-      this.svg = null;
-      this.actualArc = null;
-      this.expectedArc = null;
-      this.centerCircle = null;
-      this.textGroup = null;
-      this.progressVal = null;
-      this.progressLabel = null;
-      this.meters = null;
-      this.actualPath = null;
-      this.expectedPath = null;
-      this.actualVal = 0;
-      this.expectedVal = 0;
-      this.normalColor = "#78c000";
-      this.dangerColor = "#f00";
-    }
-
-
-
-    ProgressPie.prototype.init = function () {
-      this.actualArc = d3.svg.arc()
-          .innerRadius(this.actualInner)
-          .outerRadius(this.actualOuter)
-          .cornerRadius(90)
-          .startAngle(0);
-
-      this.expectedArc = d3.svg.arc()
-          .innerRadius(this.expectedInner)
-          .outerRadius(this.expectedOuter)
-          .cornerRadius(90)
-          .startAngle(0);
-
-      this.svg = d3.select("body").append("svg")
-          .attr("width", this.width)
-          .attr("height", this.height)
-        .append("g")
-          .attr("transform", "translate(" + this.radius + "," + this.radius + ")")
-
-      this.centerCircle = this.svg.append("circle")
-        .attr("cx", 0)
-        .attr("cy", 0)
-        .attr("r", this.circleRadius)
-        .style("fill", "#000")
-        .style("opacity", "0.05");
-
-      this.textGroup = this.svg.append("g")
-        .attr("alignment-baseline", "middle");
-
-      this.progressVal = this.textGroup
-        .append("text")
-          .attr("text-anchor", "middle")
-        .append("tspan")
-          .text("73")
-          .attr("font-size", this.fontSize)
-        .append("tspan")
-          .attr("font-size", this.fontSize / 2)
-          .text("%")
-
-      this.progressLabel = this.textGroup.append("text")
-        .attr("font-size", this.fontSize / 2)
-        .attr("transform", "translate(0, " + this.fontSize * 0.6 + ")")
-        .attr("text-anchor", "middle")
-          .text("Progress")
-
-      this.meters = this.svg.append("g");
-
-      this.actualPath = this.meters.append("path")
-          .datum({endAngle: 0})
-          .attr("d", this.actualArc)
-      this.expectedPath = this.meters.append("path")
-          .datum({endAngle: 0})
-          .attr("d", this.expectedArc)
-          .attr("opacity", "0.33");
-    };
-
-    ProgressPie.prototype.setVal = function(expectedVal, actualVal) {
-      this.actualVal = actualVal;
-      this.expectedVal = expectedVal;
-      this.actualPath.transition().duration(1000).call(this.arcTween, actualVal * this.tau, this.actualArc)
-      this.expectedPath.transition().duration(1000).call(this.arcTween, expectedVal * this.tau, this.expectedArc)
-      var wasDanger = this.danger;
-      this.danger = Math.abs(expectedVal - actualVal) >= this.threshold;
-      if (this.danger != wasDanger) {
-        var startColor = this.danger ? this.normalColor : this.dangerColor;
-        var endColor = this.danger ? this.dangerColor : this.normalColor;
-        this.meters.transition()
-          .duration(1000)
-          .tween("color", function() {
-            var i = d3.interpolate(startColor, endColor)
-            return function(t) {
-              this.setAttribute("fill", i(t));
-            };
-          });
-      }
-    };
-
-    ProgressPie.prototype.fillTween = function (transition, newColor, group) {
-      console.log(group);
-      console.log(transition);
-
-      transition.attrTween("fill", function(d) {
-        var interpolate = d3.interpolate(d.fill, newColor);
-        return function(t) {
-          d.fill = interpolate(t);
-          console.log(d);
-          return group(d);
-        };
-      });
-    };
-
-    ProgressPie.prototype.arcTween = function (transition, newAngle, arc) {
-      transition.attrTween("d", function(d) {
-        var interpolate = d3.interpolate(d.endAngle, newAngle);
-        return function(t) {
-          d.endAngle = interpolate(t);
-          return arc(d);
-        };
-      });
-    };
-
-    ProgressPie.prototype.printValues = function () {
-      console.log("Actual Inner: " + this.actualInner);
-      console.log("Actual Outer: " + this.actualOuter);
-      console.log("Gap: " + this.gap);
-      console.log("Expected Inner: " + this.expectedInner);
-      console.log("Expected Outer: " + this.expectedOuter);
-      console.log("Circle Radius: " + this.circleRadius);
-    };
-
-
-    pp = new ProgressPie();
-    pp.init();
-    pp.setVal(0.5, 0.14);
-
-
-    window.doSet = function() {
-    	var actual = parseFloat(document.querySelectorAll("#actual").value);
-    	var expected = parseFloat(document.querySelectorAll("#expected").value);
-    	pp.setVal(actual, expected);
-    };
-
-
-
-    </script>
-    -->
+  <body ng-controller="ProgressPieCtrl" bgcolor="#FFF">
+    <div progresspie data-actual="0.5" data-expected="0.25"></div>
+    <input type="text" ng-model="ctrl.actual"> Actual<br />
+    <input type="text" ng-model="ctrl.expected"> Expected<br />
+    <button ng-click="ProgressPieCtrl.update">Update</button>
   </body>
 </html>
