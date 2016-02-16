@@ -31,14 +31,19 @@
 
     ProgressPie.prototype.expected = 0;
 
+    ProgressPie.prototype.threshold = 0.1;
+
+    ProgressPie.prototype.normalColor = "#78c000";
+
+    ProgressPie.prototype.dangerColor = "#f00";
+
+    ProgressPie.prototype.size = 240;
+
+    ProgressPie.prototype.updateSpeed = 500;
+
     function ProgressPie() {
-      this.size = 240;
-      this.updateSpeed = 500;
       this.radius = this.size / 2;
       this.tau = 2 * Math.PI;
-      this.threshold = 0.1;
-      this.normalColor = "#78c000";
-      this.dangerColor = "#f00";
     }
 
     ProgressPie.prototype.draw = function(element) {

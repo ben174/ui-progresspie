@@ -21,17 +21,16 @@ angular.module 'ui-progresspie', []
     .controller 'ProgressPieCtrl',
         class ProgressPie
             actual: 0
-
             expected: 0
+            threshold: 0.1
+            normalColor: "#78c000"
+            dangerColor: "#f00"
+            size: 240
+            updateSpeed: 500
 
             constructor: () ->
-                @size = 240
-                @updateSpeed = 500
                 @radius = @size / 2
                 @tau = 2 * Math.PI
-                @threshold = 0.1
-                @normalColor = "#78c000"
-                @dangerColor = "#f00"
 
             draw: (element) ->
                 @elem = d3.select(element[0])
