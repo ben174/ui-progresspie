@@ -7,129 +7,139 @@
 ###
 
 
-
-class Animal
-    constructor: (@name) ->
-
-    move: (meters) ->
-        console.log @name + " moved #{meters}m."
-
-snake = new Animal('snake')
-snake.move(10)
-
-
-
 angular.module 'ui-progresspie', []
-    .directive 'progresspie', ->
-        new ProgressPieX(220)
+    .directive 'progresspie', () ->
+        controller: 'ProgressPieCtrl as ctrl',
+        link: (scope, element, attr, ctrl) ->
+            ctrl.draw element
+            ctrl.printValues
+
+    .controller 'ProgressPieCtrl',
+        class ProgressPieX
+            constructor: () ->
+                @size = 220
+                console.log "Constructor called!"
+                @updateSpeed = 1000
+                @radius = @size / 2
+                console.log "Radius set to #{@radius}."
+                @tau = 2 * Math.PI
+                @threshold = 0.1
+                @normalColor = "#78c000"
+                @dangerColor = "#f00"
+
+            draw: (element) ->
+                @elem = d3.select(element[0])
+                console.log "draw called!"
+                console.log "size is #{@size}"
+                radius = @size / 2
+                console.log "Radius set to #{@radius}."
+                console.log @radius
+                actualInner = @radius - (@radius * 0.10)
+                actualOuter = @radius
+                gap = @radius * 0.02
+                expectedInner = @radius - (@radius * 0.17)
+                expectedOuter = actualInner - gap
+                circleRadius = @radius * 0.7
+                danger = false
+                @actualVal = 0
+                @expectedVal = 0
+
+                console.log "Actual Inner: #{actualInner}"
+                console.log "Actual Outer: #{actualOuter}"
+                console.log "Gap: #{gap}"
+                console.log "Expected Inner: #{expectedInner}"
+                console.log "Expected Outer: #{expectedOuter}"
+                console.log "Circle Radius: #{circleRadius}"
 
 
-class ProgressPieX
-    constructor: (@fooo) ->
-        #console.log "Constructor called!"
-        #radius = @size / 2
-        #console.log "Radius set to #{@radius}."
-        #@tau = 2 * Math.PI
-        #@threshold = 0.1
-        #@normalColor = "#78c000"
-        #@dangerColor = "#f00"
+                fontSize = @radius * 0.4
+                lineGap = fontSize * 0.65
 
-    restrict: 'EA'
+                @actualArc = d3.svg.arc()
+                    .innerRadius(actualInner)
+                    .outerRadius(actualOuter)
+                    .cornerRadius(90)
+                    .startAngle(0)
 
-    link: (scope, element, attr) ->
-        console.log "link called!"
-        console.log "size is #{@fooo}"
-        radius = @size / 2
-        console.log "Radius set to #{@radius}."
-        console.log @radius
-        actualInner = @radius - (@radius * 0.10)
-        actualOuter = @radius
-        expectedInner = @radius - (@radius * 0.17)
-        expectedOuter = actualInner - gap
-        gap = @radius * 0.02
-        circleRadius = @radius * 0.7
-        danger = false
-        actualVal = 0
-        expectedVal = 0
+                @expectedArc = d3.svg.arc()
+                    .innerRadius(expectedInner)
+                    .outerRadius(expectedOuter)
+                    .cornerRadius(90)
+                    .startAngle(0)
 
-        @elem = d3.select(element[0])
+                svg = @elem.append "svg"
+                    .attr "width", @size
+                    .attr "height", @size
+                    .append "g"
+                    .attr "transform", "translate(#{@radius},#{@radius})"
 
-        fontSize = @radius * 0.4
+                centerCircle = svg.append "circle"
+                    .attr "cx", 0
+                    .attr "cy", 0
+                    .attr "r", circleRadius
+                    .style "fill", "#000"
+                    .style "opacity", "0.05"
 
-        actualArc = d3.svg.arc()
-            .innerRadius(actualInner)
-            .outerRadius(actualOuter)
-            .cornerRadius(90)
-            .startAngle(0)
+                textGroup = svg.append "g"
+                    .attr "alignment-baseline", "middle"
 
-        expectedArc = d3.svg.arc()
-            .innerRadius(expectedInner)
-            .outerRadius(expectedOuter)
-            .cornerRadius(90)
-            .startAngle(0)
+                progressVal = textGroup.append "text"
+                    .attr "text-anchor", "middle"
+                    .append "tspan"
+                        .text "73"
+                        .attr "font-size", fontSize
+                    .append "tspan"
+                        .attr "font-size", fontSize / 2
+                        .text "%"
 
-        svg = elem.append "svg"
-            .attr "width", @size
-            .attr "height", @size
-            .append "g"
-            .attr "transform", "translate(#{@radius},#{@radius})"
+                progressLabel = textGroup.append "text"
+                    .attr "font-size", fontSize / 2
+                    .attr "transform", "translate(0, #{lineGap})"
+                    .attr "text-anchor", "middle"
+                    .text "Progress"
 
-        centerCircle = svg.append "circle"
-            .attr "cx", 0
-            .attr "cy", 0
-            .attr "r", circleRadius
-            .style "fill", "#000"
-            .style "opacity", "0.05"
+                @meters = svg.append("g")
+                    .attr("fill", @normalColor);
 
-        textGroup = svg.append "g"
-            .attr "alignment-baseline", "middle"
+                @actualPath = @meters.append "path"
+                    .datum {endAngle: 0}
+                    .attr "d", @actualArc
 
-        progressVal = textGroup.append "text"
-            .attr "text-anchor", "middle"
-            .append "tspan"
-                .text "73"
-                .attr "font-size", fontSize
-            .append "tspan"
-                .attr "font-size", fontSize / 2
-                .text "%"
+                @expectedPath = @meters.append "path"
+                    .datum {endAngle: 0}
+                    .attr "d", @expectedArc
+                    .attr "opacity", "0.33"
 
-        progressLabel = textGroup.append "text"
-            .attr "font-size", fontSize / 2
-            .attr "transform", "translate(0, #{fontSize})"
-            .attr "text-anchor", "middle"
-            .text "Progress"
+                @update 0.5, 0.75
 
-        meters = svg.append("g");
+            isDanger: ->
+                return Math.abs(@expectedVal - @actualVal) >= @threshold
 
-        actualPath = meters.append "path"
-            .datum {endAngle: 0}
-            .attr "d", this.actualArc
+            update: (expected, actual) ->
+                @actualVal = actual
+                @expectedVal = expected
+                @actualPath.transition()
+                    .duration(1000)
+                    .call(@arcTween, actual * @tau, @actualArc)
+                @expectedPath.transition()
+                    .duration(1000)
+                    .call(@arcTween, expected * @tau, @expectedArc)
+                startColor = @meters.attr "fill"
+                endColor = if @isDanger() then @dangerColor else @normalColor
+                console.log "Transitioning to #{endColor}"
+                console.log "Danger? #{@isDanger()}"
+                console.log "Current color: #{startColor}"
+                @meters.transition()
+                    .duration 1000
+                    .tween "color", () ->
+                        i = d3.interpolate(startColor, endColor)
+                        return (t) ->
+                            this.setAttribute "fill", i(t)
 
-        expectedPath = meters.append "path"
-            .datum {endAngle: 0}
-            .attr "d", this.expectedArc
-            .attr "opacity", "0.33"
-
-        #@update scope, 0.5, 0.75
-
-    update: (scope, expected, actual) ->
-        scope.actualPath.transition().duration(1000).call(arcTween, actualVal * scope.tau, scope.actualArc)
-        scope.expectedPath.transition().duration(1000).call(arcTween, expectedVal * scope.tau, scope.expectedArc)
-        wasDanger = scope.danger
-        scope.danger = Math.abs(expected - actual) >= scope.threshold
-
-    
-        #if (scope.danger != wasDanger) {
-        #    startColor = this.danger ? this.normalColor : this.dangerColor;
-        #    endColor = this.danger ? this.dangerColor : this.normalColor;
-        #    this.meters.transition()
-        #        .duration(1000)
-        #        .tween("color", colorTween startColor, endColor)
-        #}
-
-    arcTween: (scope, transition, newAngle, arc) ->
-        transition.attrTween "d", (d) ->
-            interpolate = d3.interpolate(d.endAngle, newAngle);
-            return (t) ->
-                d.endAngle = interpolate t;
-                return arc d
+            arcTween: (transition, newAngle, arc) ->
+                transition.attrTween "d", (d) ->
+                    interpolate = d3.interpolate(d.endAngle, newAngle);
+                    return (t) ->
+                        d.endAngle = interpolate t;
+                        return arc d
+            printValues: ->
