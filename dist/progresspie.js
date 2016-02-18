@@ -94,7 +94,6 @@
       var endColor;
       this.progressNum.text(Math.round(this.actual * 100));
       endColor = this.isDanger() ? this.dangerColor : this.normalColor;
-      console.log(endColor);
       this.actualPath.transition().duration(this.updateSpeed).style("fill", endColor).call(this.arcTween, this.actual * this.tau, this.actualArc);
       return this.expectedPath.transition().duration(this.updateSpeed).style("fill", endColor).call(this.arcTween, this.expected * this.tau, this.expectedArc);
     };

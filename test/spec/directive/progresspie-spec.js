@@ -1,49 +1,38 @@
-describe('Directive: progress-pie', function() {
+describe('progress-pie', function() {
   var elm, scope;
 
   beforeEach(module('ui-progresspie'));
 
-  var $rootScope, element;
-  beforeEach(inject(function (_$rootScope_) {
-    $rootScope = _$rootScope_;
-  });
+  beforeEach(inject(function($rootScope, $compile) {
+    elm = angular.element('<div progresspie expected="0" actual="0" threshold="0.1" size="240"></div>');
+    scope = $rootScope;
+    $compile(elm)(scope);
+    scope.$digest();
+  }));
 
-  function compileDirective(tpl) {
-    inject(function ($compile) {
-      element = $compile(tpl || '<div progresspie ></div>')($rootScope);
-    });
-    $rootScope.$digest();
-  }
+  it('creates an svg node', inject(function($compile, $rootScope) {
+    expect($(elm).find('svg').length).toEqual(1);
+  }));
 
-  beforeEach(function() {
-    compileDirective();
-  });
-
-  it('creates an svg node', function() {
-    angular.element(element)
-    expect(angular.element(elm).find('svg').length).toEqual(1);
-  });
-
-  it('should default to a 240 pixel square', function() {
+  it('defaults to a 240 pixel square', inject(function($compile, $rootScope) {
     expect($(elm).find('svg').attr('width')).toBe('240');
     expect($(elm).find('svg').attr('height')).toBe('240');
-  });
+  }));
 
-  it('should display a 0 in progress', function() {
+  it('displays a 0 in progress', inject(function($compile, $rootScope) {
     expect($(elm).find('text tspan:first').text()).toBe('0');
-  });
+  }));
 
-  it('should update actual progress number text', function() {
+  it('updates actual progress number text', inject(function($compile, $rootScope) {
     scope.ctrl.actual = 0.5;
     scope.ctrl.update();
     expect($(elm).find('text tspan:first').text()).toBe('50');
-  });
+  }));
 
-  it('should be in danger when it falls outside threshold', function() {
-    scope.ctrl.actual = 0.5;
+  it('becomes in danger when it falls outside threshold', inject(function($compile, $rootScope) {
+    scope.ctrl.actual = 0.1;
+    scope.ctrl.threshold = 0.5;
     scope.ctrl.update();
-    expect($(elm).find('text tspan:first').text()).toBe('50');
-  });
-
-
+    //TODO: Determine danger
+  }));
 });

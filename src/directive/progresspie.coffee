@@ -113,7 +113,6 @@ angular.module 'ui-progresspie', []
             update: ->
                 @progressNum.text Math.round @actual * 100
                 endColor = if @isDanger() then @dangerColor else @normalColor
-                console.log(endColor)
                 @actualPath.transition()
                     .duration @updateSpeed
                     .style "fill", endColor
