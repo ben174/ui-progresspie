@@ -16,13 +16,14 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       // deps
+      'node_modules/jquery/dist/jquery.js',
       'node_modules/angular/angular.js',
       'node_modules/angular-mocks/angular-mocks.js',
       'node_modules/d3/d3.js',
       // src
-      'dist/progresspie-spec.js',
+      'dist/progresspie.js',
       // tests
-      'test/spec/directives/progresspie-spec.js'
+      'test/spec/directive/progresspie-spec.js'
     ],
 
 

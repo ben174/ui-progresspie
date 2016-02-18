@@ -9,14 +9,19 @@
 
 angular.module 'ui-progresspie', []
     .directive 'progresspie', () ->
+        resrict: 'EA',
         controller: 'ProgressPieCtrl as ctrl',
         link: (scope, element, attr, ctrl) ->
             scope.$watch 'ctrl.actual', -> ctrl.update()
             scope.$watch 'ctrl.expected', -> ctrl.update()
+            scope.$watch 'ctrl.threshold', -> ctrl.update()
+            scope.$watch 'ctrl.size', -> ctrl.update()
             ctrl.draw element
         bindToController:
             actual: '='
             expected: '='
+            threshold: '='
+            size: '='
 
     .controller 'ProgressPieCtrl',
         class ProgressPie
@@ -102,14 +107,13 @@ angular.module 'ui-progresspie', []
                     .attr "d", @expectedArc
                     .attr "opacity", "0.33"
 
-
             isDanger: ->
                 return @expected - @actual >= @threshold
 
             update: ->
-                console.log "Update: #{@actual}, #{@expected}"
                 @progressNum.text Math.round @actual * 100
                 endColor = if @isDanger() then @dangerColor else @normalColor
+                console.log(endColor)
                 @actualPath.transition()
                     .duration @updateSpeed
                     .style "fill", endColor
@@ -126,5 +130,4 @@ angular.module 'ui-progresspie', []
                         d.endAngle = interpolate t;
                         return arc d
             setRandom: ->
-                console.log "Set random was called"
                 @update Math.random(), Math.random()

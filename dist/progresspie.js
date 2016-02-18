@@ -11,6 +11,7 @@
 
   angular.module('ui-progresspie', []).directive('progresspie', function() {
     return {
+      resrict: 'EA',
       controller: 'ProgressPieCtrl as ctrl',
       link: function(scope, element, attr, ctrl) {
         scope.$watch('ctrl.actual', function() {
@@ -19,11 +20,19 @@
         scope.$watch('ctrl.expected', function() {
           return ctrl.update();
         });
+        scope.$watch('ctrl.threshold', function() {
+          return ctrl.update();
+        });
+        scope.$watch('ctrl.size', function() {
+          return ctrl.update();
+        });
         return ctrl.draw(element);
       },
       bindToController: {
         actual: '=',
-        expected: '='
+        expected: '=',
+        threshold: '=',
+        size: '='
       }
     };
   }).controller('ProgressPieCtrl', ProgressPie = (function() {
@@ -83,9 +92,9 @@
 
     ProgressPie.prototype.update = function() {
       var endColor;
-      console.log("Update: " + this.actual + ", " + this.expected);
       this.progressNum.text(Math.round(this.actual * 100));
       endColor = this.isDanger() ? this.dangerColor : this.normalColor;
+      console.log(endColor);
       this.actualPath.transition().duration(this.updateSpeed).style("fill", endColor).call(this.arcTween, this.actual * this.tau, this.actualArc);
       return this.expectedPath.transition().duration(this.updateSpeed).style("fill", endColor).call(this.arcTween, this.expected * this.tau, this.expectedArc);
     };
@@ -102,7 +111,6 @@
     };
 
     ProgressPie.prototype.setRandom = function() {
-      console.log("Set random was called");
       return this.update(Math.random(), Math.random());
     };
 

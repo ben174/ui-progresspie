@@ -1,4 +1,3 @@
-
 module.exports = function(grunt) {
 
   // Project configuration.
@@ -7,13 +6,14 @@ module.exports = function(grunt) {
     coffee: {
       compile: {
         files: {
-          'dist/progresspie.js': 'src/directives/progresspie.coffee'
+          'dist/test-controller.js': 'src/controller/test-controller.coffee',
+          'dist/progresspie.js': 'src/directive/progresspie.coffee'
         }
       }
     },
     watch: {
       coffee: {
-        files: ['src/directives/progresspie.coffee'],
+        files: ['src/directive/progresspie.coffee', 'src/controller/test-controller.coffee'],
         tasks: ['coffee']
       }
     }

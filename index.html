@@ -19,9 +19,9 @@
     </style>
   </head>
   <body ng-controller="ProgressPieCtrl" bgcolor="#FFF">
-    <div progresspie data-actual="0.5" data-expected="0.25"></div>
+    <div progresspie data-actual="0.5" data-expected="0.25" data-size="340" data-threshold="0.1"></div>
     <input type="text" ng-model="ctrl.actual"> Actual<br />
     <input type="text" ng-model="ctrl.expected"> Expected<br />
-    <button ng-click="ProgressPieCtrl.update">Update</button>
+    <input type="text" ng-model="ctrl.threshold"> Threshold<br />
   </body>
 </html>

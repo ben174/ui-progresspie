@@ -18,6 +18,8 @@ An Angular directive which renders a circular progress meter with two values: Ex
 
 * Coffee lint
 
+* Travis?
+
 
 ## Usage
 
