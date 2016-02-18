@@ -1,49 +1,28 @@
+
 <!doctype html>
 <html ng-app="demoapp">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Ui-progresspie by ben174</title>
-
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/github-light.css">
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
     <script src="js/progresspie.js"></script>
-    <meta name="viewport" content="width=device-width">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <script>
+        var app = angular.module("demoapp", ['ui-progresspie']);
+        app.controller("ProgressPieController", [ "$scope", function($scope) {
+            // Nothing here!
+        }]);
+    </script>
     <style>
     text {
       font-family: sans-serif;
       fill: #666;
-      
       font-weight: 100;
     }
     </style>
   </head>
-  <body>
-    <div class="wrapper" ng-controller="ProgressPieCtrl">
-      <header>
-        <h1>Ui-progresspie</h1>
-        <p>An Angular directive which renders a circular progress meter with two values: Expected and Actual progress (0.0 - 1.0)</p>
-
-        <p class="view"><a href="https://github.com/ben174/ui-progresspie">View the Project on GitHub <small>ben174/ui-progresspie</small></a></p>
-
-        <ul>
-          <li><a href="https://github.com/ben174/ui-progresspie/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/ben174/ui-progresspie/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/ben174/ui-progresspie">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-
-      <div progresspie data-actual="0.5" data-expected="0.25" data-size="340" data-threshold="0.1"></div>
-      <input type="text" ng-model="ctrl.actual"> Actual<br />
-      <input type="text" ng-model="ctrl.expected"> Expected<br />
-      <input type="text" ng-model="ctrl.threshold"> Threshold<br />
-      <script src="js/scale.fix.js"></script>
-    
+  <body ng-controller="ProgressPieCtrl" bgcolor="#FFF">
+    <div progresspie data-actual="0.5" data-expected="0.25" data-size="340" data-threshold="0.1"></div>
+    <input type="text" ng-model="ctrl.actual"> Actual<br />
+    <input type="text" ng-model="ctrl.expected"> Expected<br />
+    <input type="text" ng-model="ctrl.threshold"> Threshold<br />
   </body>
 </html>
