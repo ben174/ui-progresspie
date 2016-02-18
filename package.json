@@ -40,7 +40,6 @@
     "requirejs": "^2.1.20"
   },
   "dependencies": {
-    "angular": "1.x",
-    "angular-simple-logger": "0.1.x"
+    "angular": "1.x"
   }
 }

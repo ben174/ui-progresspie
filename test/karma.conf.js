@@ -20,9 +20,9 @@ module.exports = function(config) {
       'node_modules/angular-mocks/angular-mocks.js',
       'node_modules/d3/d3.js',
       // src
-      'dist/progresspie.js',
+      'dist/progresspie-spec.js',
       // tests
-      'test/spec/directives/progresspie.js'
+      'test/spec/directives/progresspie-spec.js'
     ],
 
 
